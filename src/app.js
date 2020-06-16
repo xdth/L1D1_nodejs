@@ -46,6 +46,7 @@ app.put("/repositories/:id", (request, response) => {
     return response.status(403).json({ likes: 0 });
   }
 
+  /*
   const repository = {
     id,
     title,
@@ -54,6 +55,14 @@ app.put("/repositories/:id", (request, response) => {
   };
 
   repositories[repositoryIndex] = repository;
+  */
+
+  repositories[repositoryIndex] = {
+    ...repositories[repositoryIndex],
+    url,
+    title,
+    techs
+  };
 
   return response.json(repositories[repositoryIndex]);
   
