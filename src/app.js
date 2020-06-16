@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const { uuid } = require("uuidv4");
+const { json } = require("express");
 
 const app = express();
 
@@ -31,11 +32,47 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+  const { title, url, techs, likes } = request.body;
+
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Project not found' });
+  }
+
+  if (likes) {
+    // return response.status(403).json({ error: 'You cannot update likes here, use the appropriate route' });
+    return response.status(403).json({ likes: 0 });
+  }
+
+  const repository = {
+    id,
+    title,
+    url,
+    techs,
+  };
+
+  repositories[repositoryIndex] = repository;
+
+  return response.json(repositories[repositoryIndex]);
+  
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Project not found' });
+  }
+
+  // delete from array starting from repositoryIndex, until 1 next key
+  repositories.splice(repositoryIndex, 1);
+
+  return response.status(204).send();
+ 
 });
 
 app.post("/repositories/:id/like", (request, response) => {
