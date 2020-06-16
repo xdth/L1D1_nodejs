@@ -38,7 +38,7 @@ app.put("/repositories/:id", (request, response) => {
   const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
   if (repositoryIndex < 0) {
-    return response.status(400).json({ error: 'Project not found' });
+    return response.status(400).json({ error: 'Repository not found' });
   }
 
   if (likes) {
@@ -74,7 +74,7 @@ app.delete("/repositories/:id", (request, response) => {
   const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
   if (repositoryIndex < 0) {
-    return response.status(400).json({ error: 'Project not found' });
+    return response.status(400).json({ error: 'Repository not found' });
   }
 
   // delete from array starting from repositoryIndex, until 1 next key
@@ -87,15 +87,16 @@ app.delete("/repositories/:id", (request, response) => {
 app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
 
-  const repository = repositories.find(repository => repository.id === id);
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-  if (!repository) {
-    return response.status(400).send();
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'Repository not found' });
   }
 
-  repository.likes++;
 
-  return response.json(repository);
+  repositories[repositoryIndex].likes++;
+
+  return response.json(repositories[repositoryIndex]);
 });
 
 module.exports = app;
